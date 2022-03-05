@@ -65,7 +65,7 @@ function tampilData() {
 
     // ADD XML DATA
 
-    let columnEnum, curParDOM, output = [];
+    let columnEnum, columnEnumLength, curParDOM, output = [];
 
     function tulisNama(defTemStr, el, ct) {
         const elType = el.querySelector('name');
@@ -176,16 +176,25 @@ function tampilData() {
     }
 
     function forEachCurPar(func) {
-        curParDOM.forEach((el, ct) => {
-            func(el, ct);
-            if (ct == curParDOM.length - 1) sekat(1);
-        });
+
+        if (curParDOM.length == 0) {
+            sekat(1);
+        }
+        else {
+            curParDOM.forEach((el, ct) => {
+                func(el, ct);
+                if (ct == curParDOM.length - 1) sekat(1);
+            });
+        }
+    }
+
+    function updateColumnEnumLength() {
+        columnEnumLength = Object.keys(columnEnum).length;
     }
 
     // JALUR //
 
     curParDOM = KML.jalur;
-
     columnEnum = {
         NAMA: 0,
         KETERANGAN: 1,
@@ -195,8 +204,9 @@ function tampilData() {
         TIKOR_AWAL: 5,
         TIKOR_AKHIR: 6
     };
+    updateColumnEnumLength();
 
-    for (let i = 0; i < Object.keys(columnEnum).length; i++) {
+    for (let i = 0; i < columnEnumLength; i++) {
 
         switch (i) {
             case columnEnum.NAMA: {
@@ -252,7 +262,6 @@ function tampilData() {
     // CLOSURE //
 
     curParDOM = KML.closure;
-
     columnEnum = {
         NAMA: 0,
         LATITUDE: 1,
@@ -260,8 +269,9 @@ function tampilData() {
         HARGA: 3,
         KETERANGAN: 4
     };
+    updateColumnEnumLength();
 
-    for (let i = 0; i < Object.keys(columnEnum).length; i++) {
+    for (let i = 0; i < columnEnumLength; i++) {
 
         switch (i) {
             case columnEnum.NAMA: {
@@ -299,7 +309,6 @@ function tampilData() {
     // ODP //
 
     curParDOM = KML.ODP;
-
     columnEnum = {
         NAMA: 0,
         LATITUDE: 1,
@@ -308,8 +317,9 @@ function tampilData() {
         HARGA: 4,
         KETERANGAN: 5
     };
+    updateColumnEnumLength();
 
-    for (let i = 0; i < Object.keys(columnEnum).length; i++) {
+    for (let i = 0; i < columnEnumLength; i++) {
 
         switch (i) {
             case columnEnum.NAMA: {
@@ -352,7 +362,6 @@ function tampilData() {
     // TIANG //
 
     curParDOM = KML.tiang;
-
     columnEnum = {
         NAMA: 0,
         LATITUDE: 1,
@@ -361,8 +370,9 @@ function tampilData() {
         HARGA: 4,
         KETERANGAN: 5
     };
+    updateColumnEnumLength();
 
-    for (let i = 0; i < Object.keys(columnEnum).length; i++) {
+    for (let i = 0; i < columnEnumLength; i++) {
 
         switch (i) {
             case columnEnum.NAMA: {

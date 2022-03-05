@@ -331,7 +331,7 @@ rekonstruksi = () => {
     const sisaLength = KML.sisa.length;
     if (sisaLength != 0) {
         
-        sisa.querySelector('header').innerHTML = `Sisa (${sisaLength})`;
+        sisa.querySelector('header').innerHTML = `Sisa (${sisaLength}) **masih dalam pengembangan`;
         const sisaPlacemarks = sisa.querySelector('.placemarks');
         const sisaOptions = sisa.querySelector('.options');
         sisa.classList.add('sisa-berhasil');
