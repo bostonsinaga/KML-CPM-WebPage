@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KMZ TO GOOGLE SHEETS | BOSTON SINAGA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="input-card">
+        <h1>KMZ TO GOOGLE SHEETS</h1>
+        <input type="file" accept=".kmz, .kml" name='KMZ' onchange="olahData()">
+    </div>
+
+    <div class="hasil">
+        <header>Silakan "copy" data berikut dan "paste" ke Google Sheets</header>
+        <section></section>
+    </div>
+
+    <div class="sisa">
+        <header>Sisa</header>
+        <div class="placemarks"></div>
+        <form class="options">
+            <input type="radio" name="jenis" value="Closure">
+            <label for="closure">Closure</label><br>
+            <input type="radio" name="jenis" value="ODP">
+            <label for="odp">ODP</label><br>
+            <input type="radio" name="jenis" value="Tiang">
+            <label for="tiang">Tiang</label><br><br>
+            <input type="button" value="Ganti" class="tombol-ganti">
+        </form>
+    </div>
+
+    <button class="unduh">UNDUH KMZ</button>
+
+    <footer>
+        See my GitHub <a href="https://github.com/bostonsinaga">@bostonsinaga</a>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script src="rekonstruktor.js"></script>
+</body>
+</html>
