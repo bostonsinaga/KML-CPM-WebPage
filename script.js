@@ -410,16 +410,54 @@ function tampilData() {
     
     //////////////
 
-    const hasilSection = hasil.querySelector('section');
-    hasilSection.innerHTML = JSON.stringify(output);
-    hasil.classList.add('hasil-berhasil');
-
-    hasilSection.addEventListener('click', () => {
+    const copyAll = (obj) => {
         var range = document.createRange();
-        range.selectNode(hasilSection);
+        range.selectNode(obj);
         window.getSelection().removeAllRanges();
         window.getSelection().addRange(range);
-    });
+    }
+
+    const outputText = JSON.stringify(output);
+
+    const hasilSection = hasil.querySelector('section');
+    hasilSection.innerHTML = outputText;
+    hasil.classList.add('hasil-berhasil');
+    hasilSection.addEventListener('click', () => copyAll(hasilSection));
+
+    if(outputText.length > 50000) {
+        const partsCount = Math.ceil(outputText.length / 50000);
+        let partsTag = 0, partsTag_buff, outputTextParts = [];
+
+        for (let i = 1; i <= partsCount; i++) {
+            partsTag_buff = partsTag;
+
+            if (i == partsCount) {
+                outputTextParts.push(outputText.slice(partsTag_buff));
+            }
+            else {
+                partsTag += parseInt(outputText.length / partsCount);
+                outputTextParts.push(outputText.slice(partsTag_buff, partsTag));
+            }
+        }
+
+        hasilSection.innerHTML = outputTextParts[0];
+        hasilSection.classList.add('section-multi');
+
+        const hasilSections = Array.from(
+            {length: partsCount - 1}, () => document.createElement('section')
+        );
+
+        hasilSections.forEach((el,ct) => {
+
+            if (ct != partsCount - 2) {
+                el.classList.add('section-multi');
+            }
+
+            el.innerHTML = outputTextParts[ct+1];
+            hasil.appendChild(el);
+            el.addEventListener('click', () => copyAll(el));
+        });
+    }
 }
 
 // CARI DATA //
@@ -548,7 +586,19 @@ function muatUlang() {
 
     if (KML.placemark != undefined) {
         setupKML();
-        hasil.querySelector('section').innerHTML = '';
+        const hasilSections = hasil.querySelectorAll('section');
+        hasilSections[0].innerHTML = '';
+        hasilSections[0].classList.remove('section-multi');
+
+        // if multi
+        if (hasilSections.length > 1) {
+            hasilSections.forEach((el, ct) => {
+                if (ct > 0) {
+                    hasil.removeChild(el);
+                }
+            });
+        }
+
         sisa.querySelector('.placemarks').innerHTML = '';
         unduh.classList.remove('unduh-siap');
     }

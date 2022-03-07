@@ -36,22 +36,23 @@
 }
 
 .hasil-berhasil, .sisa-berhasil {
-    display: grid;
     margin: auto;
     width: 900px;
-    height: 340px;
     border: 5px solid rgb(223, 62, 62);
     border-radius: 10px;
     text-align: center;
 }
 
 .hasil-berhasil {
-    grid-template-rows: 40px auto;
+    display: flex;
+    flex-direction: column;
+    height: auto;
 }
 
 .sisa-berhasil {
+    display: grid;
     margin-top: 100px;
-    grid-template-rows: 40px auto;
+    grid-template-rows: 40px 300px;
     grid-template-columns: 0.75fr 0.25fr;
     grid-template-areas: "header header" "placemarks options";
 }
@@ -67,6 +68,10 @@
     line-height: 35px;
 }
 
+.hasil .section-multi {
+    border-bottom: 5px solid rgb(223, 62, 62);
+}
+
 .sisa header {
     grid-area: header;
 }
@@ -78,6 +83,7 @@
 
 .hasil section {
     cursor: copy;
+    height: 300px;
 }
 
 .sisa .placemarks {
@@ -119,7 +125,6 @@
     height: 1em;
     border-radius: 50%;
 }
-
 
 .unduh-siap {
     display: block;
