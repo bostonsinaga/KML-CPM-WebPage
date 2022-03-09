@@ -6,7 +6,8 @@
 const hasil = document.querySelector('.hasil');
 const sisa = document.querySelector('.sisa');
 const unduh = document.querySelector('.unduh');
-let xmlText, rekonstruksi = undefined;
+
+let xmlText, rekonstruksi = undefined, IS_GANTI_BUTTON_ACTIVATED = false;
 
 /*  data yang akan dicari */
 let KML;
@@ -234,7 +235,7 @@ function tampilData() {
                             [kors.lon[i], kors.lon[i+1]]
                         );
                     }
-                    output.push(`${parseInt(totalJarak * 1000)}m`);
+                    output.push(parseInt(totalJarak * 1000));
                 });
             break;}
             case columnEnum.TOTAL_HARGA: {
@@ -462,114 +463,122 @@ function tampilData() {
 
 // CARI DATA //
 
-function cariData() {
+function generateIconName(isPath, eStyle) {
 
-    for (e of KML.placemark) {
+    let iconSource = '', iconName = '';
 
-        let iconSource = '', iconName = '';
-        const eStyle = e.querySelector('styleUrl').innerHTML;
-
-        function generateIconName(func) {
-            for (i of KML.styleMap) {
-                if (`#${i.id}` == eStyle) {
-
-                    const stylePairNormalID = i.querySelector('Pair styleUrl').innerHTML;
-                    for (j of KML.style) {
-                        if (`#${j.id}` == stylePairNormalID) {
-                            func(j);
-                            break;
+    for (i of KML.styleMap) {
+        if (`#${i.id}` == eStyle) {
+            
+            const stylePairNormalID = i.querySelector('Pair styleUrl').innerHTML;
+            
+            for (j of KML.style) {
+                if (`#${j.id}` == stylePairNormalID) {
+                    
+                    if (isPath) {
+                        try {
+                            iconName = j.querySelector('LineStyle color').innerHTML;
+                        }
+                        catch (err) {
+                            iconName = 'ff000000';
                         }
                     }
+                    else {
+                        try {
+                            iconSource = j.querySelector('IconStyle Icon href').innerHTML;
+                        }
+                        catch (err) {
+                            iconSource = 'https://maps.google.com/mapfiles/kml/shapes/donut.png';
+                        }
+        
+                        let h = iconSource.length, buffer = '';
+                        while (h--) {
+                            if (iconSource.charAt(h) != '/') {
+                                buffer += iconSource.charAt(h);
+                            }
+                            else {
+                                iconName = buffer.split('').reverse().join('');
+                                break;
+                            }
+                        }
+                    }
+
                     break;
                 }
             }
+            break;
         }
+    }
+
+    return {source: iconSource, name: iconName};
+}
+
+function cariData() {
+    
+    for (e of KML.placemark) {
+
+        let icon;
+        const eStyle = e.querySelector('styleUrl').innerHTML;
 
         if (e.querySelector('LineString')) {
-            KML.jalur.push(e);
             
-            generateIconName(dom => {
-                try {
-                    iconName = dom.querySelector('LineStyle color').innerHTML;
-                }
-                catch (err) {
-                    iconName = 'ff000000';
-                }
-            });
-
-            switch (iconName) {
+            icon = generateIconName(true, eStyle);
+            switch (icon.name) {
                 case 'ff00ffff': {
+                    KML.jalur.push(e);
                     KML.styleName.push([eStyle, '#msn_akses']);
                     break;
                 }
                 case 'ff00ff00': {
+                    KML.jalur.push(e);
                     KML.styleName.push([eStyle, '#msn_backbone']);
                     break;
                 }
                 default: {
                     KML.sisa.push(e);
-                    KML.sisaIconSource.push(iconName);
-                    KML.styleName.push([eStyle, `sisa*${iconName}`]);
+                    KML.sisaIconSource.push(icon.name);
+                    KML.styleName.push([eStyle, `sisa*${icon.name}`]);
                 }
             }
         }
         else {
             
-            generateIconName(dom => {
-                try {
-                    iconSource = dom.querySelector('IconStyle Icon href').innerHTML;
-                }
-                catch (err) {
-                    iconSource = 'https://maps.google.com/mapfiles/kml/shapes/donut.png';
-                }
-
-                let h = iconSource.length, buffer = '';
-                while (h--) {
-                    if (iconSource.charAt(h) != '/') {
-                        buffer += iconSource.charAt(h);
-                    }
-                    else {
-                        iconName = buffer.split('').reverse().join('');
-                        break;
-                    }
-                }
-            });
-
-            switch (iconName) {
+            icon = generateIconName(false, eStyle);
+            switch (icon.name) {
                 case 'ylw-pushpin.png': {
                     KML.closure.push(e);
-                    KML.styleName.push([eStyle, '#msn_ylw-pushpin']);
+                    KML.styleName.push([eStyle, '#msn_closure']);
                     break;
                 }
                 case 'placemark_square.png': {
                     KML.ODP.push(e);
-                    KML.styleName.push([eStyle, '#msn_placemark_square']);
+                    KML.styleName.push([eStyle, '#msn_odp']);
                     break;
                 }
                 case 'blue-pushpin.png': {
                     KML.tiang.push(e);
-                    KML.styleName.push([eStyle, '#msn_blue-pushpin']);
+                    KML.styleName.push([eStyle, '#msn_tiang']);
                     break;
                 }
                 case 'red-pushpin.png': {
                     KML.coilan.push(e);
-                    KML.styleName.push([eStyle, '#msn_red-pushpin']);
+                    KML.styleName.push([eStyle, '#msn_coilan']);
                     break;
                 }
                 case 'wht-pushpin.png': {
                     KML.client.push(e);
-                    KML.styleName.push([eStyle, '#msn_wht-pushpin']);
+                    KML.styleName.push([eStyle, '#msn_client']);
                     break;
                 }
                 case 'ranger_station.png': {
                     KML.POP.push(e);
-                    KML.styleName.push([eStyle, '#msn_ranger_station']);
+                    KML.styleName.push([eStyle, '#msn_pop']);
                     break;
                 }
                 default: {
                     KML.sisa.push(e);
-                    KML.sisaIconSource.push(iconSource);
-                    KML.styleName.push([eStyle, `sisa*${iconName}`]);
+                    KML.sisaIconSource.push(icon.source);
+                    KML.styleName.push([eStyle, `sisa*${icon.name}`]);
                 }
             }
         }
@@ -609,7 +618,7 @@ function muatUlang() {
         KML.styleMap = xmlObj.querySelectorAll('StyleMap');
 
         cariData();
-        tampilData();
+        tampilData(); // generates JSON form
         rekonstruksi();
     }, 10);
 }

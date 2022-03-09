@@ -3,6 +3,71 @@
     email: bostonsinga@gmail.com
 */
 
+let templatePlacemarkXML_scaleToggle = 1.3;
+function getTemplatePlacemarkXML_style(id, icoSrc) {
+
+    if (templatePlacemarkXML_scaleToggle == 1.3)
+        templatePlacemarkXML_scaleToggle = 1.1;
+    else templatePlacemarkXML_scaleToggle = 1.3;
+
+    return `
+        <Style id="${id}">
+            <IconStyle>
+                <scale>${templatePlacemarkXML_scaleToggle}</scale>
+                <Icon>
+                    <href>${icoSrc}</href>
+                </Icon>
+                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+            </IconStyle>
+            <BalloonStyle>
+            </BalloonStyle>
+            <ListStyle>
+            </ListStyle>
+        </Style>`;
+}
+
+function getTemplatePlacemarkXML_styleMap(id, icoSrc) { // only call this, not above. Because they connected
+
+    return `${getTemplatePlacemarkXML_style(id.n, icoSrc) + getTemplatePlacemarkXML_style(id.h, icoSrc)}
+        <StyleMap id="${id.map}">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#${id.n}</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#${id.h}</styleUrl>
+            </Pair>
+        </StyleMap>`;
+}
+
+function getTemplatePathXML_style(id, icoNm) {
+
+    return `        <Style id="${id}">
+            <BalloonStyle>
+            </BalloonStyle>
+            <LineStyle>
+                <color>${icoNm}</color>
+            </LineStyle>
+        </Style>`;
+}
+
+function getTemplatePathXML_styleMap(id, icoSrc) { // only call this, not above. Because they connected
+
+    return `${getTemplatePathXML_style(id.n, icoSrc) + getTemplatePathXML_style(id.h, icoSrc)}
+        <StyleMap id="${id.map}">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#${id.n}</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#${id.h}</styleUrl>
+            </Pair>
+        </StyleMap>
+    `;
+}
+
 rekonstruksi = () => {
 
     // susun ulang 'xmlText' //
@@ -35,283 +100,79 @@ rekonstruksi = () => {
         }
     }
 
-    const styleSetXML = `
-        <Style id="sh_ylw-pushpin">
-            <IconStyle>
-                <scale>1.3</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sn_ylw-pushpin">
-            <IconStyle>
-                <scale>1.1</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_ylw-pushpin">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_ylw-pushpin</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_ylw-pushpin</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sh_red-pushpin">
-            <IconStyle>
-                <scale>1.3</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sn_red-pushpin">
-            <IconStyle>
-                <scale>1.1</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_red-pushpin">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_red-pushpin</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_red-pushpin</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sh_wht-pushpin">
-            <IconStyle>
-                <scale>1.3</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sn_wht-pushpin">
-            <IconStyle>
-                <scale>1.1</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_wht-pushpin">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_wht-pushpin</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_wht-pushpin</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sh_blue-pushpin">
-            <IconStyle>
-                <scale>1.3</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sn_blue-pushpin">
-            <IconStyle>
-                <scale>1.1</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_blue-pushpin">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_blue-pushpin</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_blue-pushpin</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sn_placemark_square">
-            <IconStyle>
-                <scale>1.2</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_square.png</href>
-                </Icon>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sh_placemark_square_highlight">
-            <IconStyle>
-                <scale>1.2</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_square_highlight.png</href>
-                </Icon>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_placemark_square">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_placemark_square</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_placemark_square_highlight</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sn_ranger_station">
-            <IconStyle>
-                <scale>1.2</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/shapes/ranger_station.png</href>
-                </Icon>
-                <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <Style id="sh_ranger_station">
-            <IconStyle>
-                <scale>1.4</scale>
-                <Icon>
-                    <href>http://maps.google.com/mapfiles/kml/shapes/ranger_station.png</href>
-                </Icon>
-                <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>
-        <StyleMap id="msn_ranger_station">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_ranger_station</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_ranger_station</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sn_backbone">
-            <BalloonStyle>
-            </BalloonStyle>
-            <LineStyle>
-                <color>ff00ff00</color>
-            </LineStyle>
-        </Style>
-        <Style id="sh_backbone">
-            <IconStyle>
-                <scale>1.2</scale>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <LineStyle>
-                <color>ff00ff00</color>
-            </LineStyle>
-        </Style>
-        <StyleMap id="msn_backbone">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_backbone</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_backbone</styleUrl>
-            </Pair>
-        </StyleMap>
-        <Style id="sn_akses">
-            <BalloonStyle>
-            </BalloonStyle>
-            <LineStyle>
-                <color>ff00ff00</color>
-            </LineStyle>
-        </Style>
-        <Style id="sh_akses">
-            <IconStyle>
-                <scale>1.2</scale>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <LineStyle>
-                <color>ff00ff00</color>
-            </LineStyle>
-        </Style>
-        <StyleMap id="msn_akses">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#sn_akses</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#sh_akses</styleUrl>
-            </Pair>
-        </StyleMap>
-    `;
+    // use template xml
+    let styleSetXML = '';
+    {
+        const iconSources = [
+            'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png',
+            'http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png',
+            'http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png',
+            'http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png',
+            'http://maps.google.com/mapfiles/kml/shapes/placemark_square.png',
+            'http://maps.google.com/mapfiles/kml/shapes/ranger_station.png'
+        ];
 
-    const end_stylesText_index = cariIndex('<Folder>', -1);
-    const stylesText = xmlText.slice(cariIndex('</open>', 7), end_stylesText_index);
+        const styleIDs = [
+            {n: 'sn_closure', h: 'sh_closure', map: 'msn_closure'},
+            {n: 'sn_coilan', h: 'sh_coilan', map: 'msn_coilan'},
+            {n: 'sn_client', h: 'sh_client', map: 'msn_client'},
+            {n: 'sn_tiang', h: 'sh_tiang', map: 'msn_tiang'},
+            {n: 'sn_odp', h: 'sh_odp', map: 'msn_odp'},
+            {n: 'sn_pop', h: 'sh_pop', map: 'msn_pop'}
+        ];
+
+        for (let i = 0; i < iconSources.length; i++) {
+            styleSetXML += getTemplatePlacemarkXML_styleMap(styleIDs[i], iconSources[i]);
+        }
+    }
+    {
+        const iconNames = [
+            'ff00ff00',
+            'ff00ffff'
+        ];
+
+        const styleIDs = [
+            {n: 'sn_backbone', h: 'sh_backbone', map: 'msn_backbone'},
+            {n: 'sn_akses', h: 'sh_akses', map: 'msn_akses'},
+        ];
+
+        for (let i = 0; i < iconNames.length; i++) {
+            styleSetXML += getTemplatePathXML_styleMap(styleIDs[i], iconNames[i]);
+        }
+
+        if (KML.sisa.length == 0) styleSetXML += '\n';
+    }
+
+    // tambahkan stye xml sisa agar tidak terjadi bug saat 'ganti' jenis
+    KML.sisa.forEach((e, i) => {
+
+        const eStyle = e.querySelector('styleUrl').innerHTML;
+        let eName;
+
+        if (eStyle.slice(0, 5) == '#msn_') {
+            eName = eStyle.slice(5);
+        }
+        else if (eStyle.slice(0, 3) == '#m_') {
+            eName = eStyle.slice(3);
+        }
+
+        const styleID = {n: `sn_${eName}`, h: `sh_${eName}`, map: eStyle.slice(1)};
+
+        if (e.querySelector('LineString')) {
+            styleSetXML += getTemplatePathXML_styleMap(styleID, KML.sisaIconSource[i]);
+        }
+        else {
+            styleSetXML += getTemplatePlacemarkXML_styleMap(styleID, KML.sisaIconSource[i]);
+        }
+        
+        if (i == KML.sisa.length - 1) styleSetXML += '\n';
+    });
+
+    const stylesText = xmlText.slice(cariIndex('</open>', 7), cariIndex('<Folder>', -1));
     xmlText = xmlText.replace(stylesText, styleSetXML);
 
     let bigFolderText = xmlText.slice(
-        end_stylesText_index + 8,
+        cariIndex('<Folder>', -1) + 8,
         cariIndex('<redloF/>', -8, true)
     );
 
@@ -319,7 +180,10 @@ rekonstruksi = () => {
 
     for (e of KML.styleName) {
         if (e[1].slice(0, 5) != 'sisa*') {
-            bigFolderText = bigFolderText.replace(e[0], e[1]);
+            bigFolderText = bigFolderText.replace(
+                '>' + e[0] + '<',
+                '>' + e[1] + '<'
+            );
         }
     }
 
@@ -337,11 +201,12 @@ rekonstruksi = () => {
         sisa.classList.add('sisa-berhasil');
         sisaPlacemarks.innerHTML = '';
 
-        let styleNameSisa = [];
+        let styleNameSisa = {style: [], icon: []};
 
         KML.styleName.forEach(e => {
             if (e[1].slice(0, 5) == 'sisa*') {
-                styleNameSisa.push(e[1].slice(5, e[1].length));
+                styleNameSisa.style.push(e[0]);
+                styleNameSisa.icon.push(e[1].slice(5, e[1].length));
             }
         });
 
@@ -374,12 +239,12 @@ rekonstruksi = () => {
                     <img src="${KML.sisaIconSource[ct]}">
                 `;
             }
-
+            
             sisaPlacemarks.appendChild(div);
         });
 
-        sisaDOMs = sisaPlacemarks.querySelectorAll('.placemark');
-        let selectedIndexes, selectedColor = Array.from(
+        const sisaDOMs = sisaPlacemarks.querySelectorAll('.placemark');
+        let selectedIndexes = undefined, selectedColor = Array.from(
             {length: sisaLength}, () => 'rgba(191, 191, 191, 0.5)'
         );
         
@@ -391,9 +256,9 @@ rekonstruksi = () => {
                 el.style.backgroundColor = selectedColor[ct];
                 selectedIndexes.push(ct);
                 
-                if (i != ct) {
-                    for (let i = 0; i < sisaLength; i++) {
-                        if (styleNameSisa[ct] == styleNameSisa[i]) {
+                for (let i = 0; i < sisaLength; i++) {
+                    if (i != ct) {
+                        if (styleNameSisa.icon[ct] == styleNameSisa.icon[i]) {
                             selectedColor[i] = selectedColor[ct];
                             sisaDOMs[i].style.backgroundColor = selectedColor[i];
                             selectedIndexes.push(i);
@@ -415,11 +280,41 @@ rekonstruksi = () => {
             });
         });
 
-        sisaOptions.querySelector('.tombol-ganti').addEventListener('click', () => {
-            console.log(sisaOptions.querySelector('input[name="jenis"]:checked').value);
-            muatUlang();
-        });
+        // Tombol Ganti
+        if (IS_GANTI_BUTTON_ACTIVATED == false) {
+            sisaOptions.querySelector('.tombol-ganti').addEventListener('click', () => {
+                IS_GANTI_BUTTON_ACTIVATED = true;
+
+                if (selectedIndexes) {
+
+                    let styleStr = '#msn_';
+                    const jenis = sisaOptions.querySelector('input[name="jenis"]:checked').value;
+                    
+                    if (jenis == 'jalur-backbone') styleStr += 'backbone';
+                    else if (jenis == 'jalur-akses') styleStr += 'akses';
+                    else if (jenis == 'pop') styleStr += 'pop';
+                    else if (jenis == 'closure') styleStr += 'closure';
+                    else if (jenis == 'coilan') styleStr += 'coilan';
+                    else if (jenis == 'odp') styleStr += 'odp';
+                    else if (jenis == 'client') styleStr += 'client';
+                    else if (jenis == 'tiang') styleStr += 'tiang';
+
+                    bigFolderText_buffer = bigFolderText;
+
+                    for (e of selectedIndexes) {
+                        bigFolderText = bigFolderText.replace(
+                            '>' + styleNameSisa.style[e] + '<',
+                            '>' + styleStr + '<'
+                        );
+                    }
+
+                    xmlText = xmlText.replace(bigFolderText_buffer, bigFolderText);
+                    muatUlang();
+                }
+            });
+        }
     }
+    else sisa.classList.remove('sisa-berhasil');
 
     // download new kml
     unduh.classList.add('unduh-siap');
