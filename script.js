@@ -8,7 +8,7 @@ const unduh = document.querySelector('.unduh');
 const petunjuk = document.querySelector('.petunjuk');
 const petunjukKlasifikasi = petunjuk.querySelectorAll('section div');
 
-let XML_OBJ, XML_TEXT, REKONSTRUKSI = undefined;
+let XML_OBJ, XML_TEXT, REKONSTRUKSI = undefined, IS_WAKTU_DATA = false;
 
 const pathClr = {
     backbone: [
@@ -180,6 +180,7 @@ function tampilData() {
     }
 
     // buat bulan dan tahun dalam format JSON untuk mengotomatisasikan tanggal
+    // pada deskipsi folder utama
     function tulisKeterangan(el, ct, tot) {
         const elType = el.querySelector('description');
 
@@ -192,6 +193,8 @@ function tampilData() {
         }
 
         if (waktuData) { 
+            IS_WAKTU_DATA = true;
+
             if (waktuData[0] > 0 && waktuData[0] < 13) {
                 
                 // tahun kabisat

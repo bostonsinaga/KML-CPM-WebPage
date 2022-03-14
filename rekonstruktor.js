@@ -11,60 +11,60 @@ function getTemplatePlacemarkXML_style(id, icoSrc) {
     else templatePlacemarkXML_scaleToggle = 1.3;
 
     return `
-        <Style id="${id}">
-            <IconStyle>
-                <scale>${templatePlacemarkXML_scaleToggle}</scale>
-                <Icon>
-                    <href>${icoSrc}</href>
-                </Icon>
-                <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <BalloonStyle>
-            </BalloonStyle>
-            <ListStyle>
-            </ListStyle>
-        </Style>`;
+    <Style id="${id}">
+        <IconStyle>
+            <scale>${templatePlacemarkXML_scaleToggle}</scale>
+            <Icon>
+                <href>${icoSrc}</href>
+            </Icon>
+            <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+        </IconStyle>
+        <BalloonStyle>
+        </BalloonStyle>
+        <ListStyle>
+        </ListStyle>
+    </Style>`;
 }
 
 function getTemplatePlacemarkXML_styleMap(id, icoSrc) { // only call this, not above. Because they connected
 
     return `${getTemplatePlacemarkXML_style(id.n, icoSrc) + getTemplatePlacemarkXML_style(id.h, icoSrc)}
-        <StyleMap id="${id.map}">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#${id.n}</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#${id.h}</styleUrl>
-            </Pair>
-        </StyleMap>`;
+    <StyleMap id="${id.map}">
+        <Pair>
+            <key>normal</key>
+            <styleUrl>#${id.n}</styleUrl>
+        </Pair>
+        <Pair>
+            <key>highlight</key>
+            <styleUrl>#${id.h}</styleUrl>
+        </Pair>
+    </StyleMap>`;
 }
 
 function getTemplatePathXML_style(id, icoNm) {
-
-    return `        <Style id="${id}">
-            <BalloonStyle>
-            </BalloonStyle>
-            <LineStyle>
-                <color>${icoNm}</color>
-            </LineStyle>
-        </Style>`;
+    return `
+    <Style id="${id}">
+        <BalloonStyle>
+        </BalloonStyle>
+        <LineStyle>
+            <color>${icoNm}</color>
+        </LineStyle>
+    </Style>`;
 }
 
 function getTemplatePathXML_styleMap(id, icoSrc) { // only call this, not above. Because they connected
 
     return `${getTemplatePathXML_style(id.n, icoSrc) + getTemplatePathXML_style(id.h, icoSrc)}
-        <StyleMap id="${id.map}">
-            <Pair>
-                <key>normal</key>
-                <styleUrl>#${id.n}</styleUrl>
-            </Pair>
-            <Pair>
-                <key>highlight</key>
-                <styleUrl>#${id.h}</styleUrl>
-            </Pair>
-        </StyleMap>`;
+    <StyleMap id="${id.map}">
+        <Pair>
+            <key>normal</key>
+            <styleUrl>#${id.n}</styleUrl>
+        </Pair>
+        <Pair>
+            <key>highlight</key>
+            <styleUrl>#${id.h}</styleUrl>
+        </Pair>
+    </StyleMap>`;
 }
 
 REKONSTRUKSI = () => {
@@ -100,7 +100,9 @@ REKONSTRUKSI = () => {
     }
 
     // use template xml
-    let styleSetXML = '';
+    let styleSetXML = `
+    <name>${XML_OBJ.querySelector('name').innerHTML}</name>
+    <open>1</open>`;
     {
         const iconSources = [
             'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png',
@@ -148,7 +150,7 @@ REKONSTRUKSI = () => {
         styleSetXML += '\n';
     }
 
-    const stylesText = XML_TEXT.slice(cariIndex('</open>', 7), cariIndex('<Folder>', -1));
+    const stylesText = XML_TEXT.slice(cariIndex('<Document>', 10), cariIndex('<Folder>', -1));
     XML_TEXT = XML_TEXT.replace(stylesText, styleSetXML);
 
     let bigFolderText = XML_TEXT.slice(
@@ -157,6 +159,13 @@ REKONSTRUKSI = () => {
     );
 
     let bigFolderText_buffer = bigFolderText;
+
+    if (IS_WAKTU_DATA) {
+        bigFolderText = bigFolderText.replace(
+            `<description>${XML_OBJ.querySelector('Folder description').innerHTML}</description>`,
+            '<description></description>'
+        );
+    }
 
     for (e of KML.styleName) {
         bigFolderText = bigFolderText.replace(
@@ -173,9 +182,12 @@ REKONSTRUKSI = () => {
 
 function downloadKML() {
 
+    const name = XML_OBJ.querySelector('name').innerHTML;
+
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(XML_TEXT));
-    element.setAttribute('download', 'doc.kml');
+
+    element.setAttribute('download', `${name.slice(0, name.length - 4)}.kml`);
 
     element.style.display = 'none';
     document.body.appendChild(element);
