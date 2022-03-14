@@ -4,31 +4,136 @@
 */
 
 const hasil = document.querySelector('.hasil');
-const sisa = document.querySelector('.sisa');
 const unduh = document.querySelector('.unduh');
+const petunjuk = document.querySelector('.petunjuk');
+const petunjukKlasifikasi = petunjuk.querySelectorAll('section div');
 
-let xmlText, rekonstruksi = undefined, IS_GANTI_BUTTON_ACTIVATED = false;
+let XML_OBJ, XML_TEXT, REKONSTRUKSI = undefined;
+
+const pathClr = {
+    backbone: [
+        '005500ff', '00aa00ff', '00aa00ff', '00aa00ff', '00aa00ff', '00aa00ff',
+        '00aa00ff','00aa00ff', '55ff00ff', '55aa7fff', '55ff7fff'
+    ],
+    tanam: [
+        'aa007fff', 'aa557fff', 'aa00ffff', 'aa55ffff', 'ff007fff',
+        'ff557fff','ffaa7fff', 'ff00ffff', 'ff55ffff', 'ffaaffff'
+    ],
+    berbeda: [
+        '00007fff', '00557fff', '0000ffff', '0055ffff', '00aaffff', 'aaaaffff','00ffffff',
+        'aaffffff', '55007fff', '55557fff', '5500ffff', '5555ffff', '55aaffff', '55ffffff'
+    ],
+    akses: ['ffff00ff', '*lain']
+};
+
+const tagSgn = {
+    tiang: [
+        'blue-pushpin.png', 'flag.png', 'purple-pushpin.png', 'blu-blank.png',
+        'blu-diamond.png', 'blu-circle.png', 'blu-square.png', 'blu-stars.png'
+    ],
+    odp: [
+        'placemark_square.png', 'square.png', 'donut.png',
+        'open-diamond.png', 'cross-hairs.png', 'placemark_circle.png'
+    ],
+    coilan: [
+        'red-pushpin.png', 'red-blank.png', 'red-diamond.png', 'red-circle.png',
+        'red-square.png', 'red-stars.png', 'pink-pushpin.png'
+    ],
+    client: [
+        'wht-pushpin.png', 'wht-blank.png', 'wht-diamond.png',
+        'wht-circle.png', 'wht-square.png', 'wht-stars.png'
+    ],
+    pop: [
+        'ranger_station.png', 'campground.png', 'grn-blank.png', 'grn-diamond.png',
+        'grn-circle.png', 'grn-square.png', 'grn-stars.png'
+    ],
+    handhole: [
+        'H.png', 'grn-pushpin.png', 'ltblu-pushpin.png'
+    ],
+    closure: ['ylw-pushpin.png', '*lain']
+};
+
+const tagSgn_folderName = {
+    tiang: [
+        'pushpin/', 'shapes/', 'pushpin/', 'paddle/',
+        'paddle/', 'paddle/', 'paddle', 'paddle/'
+    ],
+    odp: [
+        'shapes/', 'shapes/', 'shapes/',
+        'shapes/', 'shapes/', 'shapes/'
+    ],
+    coilan: [
+        'pushpin/', 'paddle/', 'paddle/', 'paddle/',
+        'paddle', 'paddle/', 'pushpin/'
+    ],
+    client: [
+        'pushpin/', 'paddle/', 'paddle/',
+        'paddle/', 'paddle', 'paddle/'
+    ],
+    pop: [
+        'shapes/', 'shapes/', 'paddle/', 'paddle/',
+        'paddle/', 'paddle', 'paddle/'
+    ],
+    handhole: [
+        'paddle/', 'pushpin/', 'pushpin/'
+    ],
+    closure: ['pushpin/']
+};
+
+function cetakPetunjuk(el, ct, obj, isPath) {
+    const objName = Object.keys(obj)[ct];
+    const folderName = isPath == false ? Object.keys(tagSgn_folderName)[ct] : undefined;
+
+    let i = 0;
+    for (e of obj[objName]) {
+        const div = document.createElement('div');
+
+        if (e == '*lain') {
+            div.innerHTML = '<i>*sisanya</i>';
+            div.style.width = 'auto';
+            div.style.border = 'none';
+        }
+        else {
+            if (isPath) div.style.backgroundColor = `#${e}`;
+            else {
+                div.style.backgroundImage = `url(http://maps.google.com/mapfiles/kml/${tagSgn_folderName[folderName][i]}/${e})`;
+                div.style.border = 'none';
+            }
+        }
+
+        el.querySelector('section').appendChild(div);
+        i++;
+    }
+}
+
+// untuk keterangan waktu
+const bulanStr = [
+    ['Januari', 31], ['Februari', 28], ['Maret', 31], ['April', 30],
+    ['Mei', 31],['Juni', 30], ['Juli', 31], ['Agustus', 31],
+    ['September', 30], ['Oktober', 31], ['November', 30], ['Desember', 31],
+];
+
+// tampilkan tanda petunjuk
+petunjukKlasifikasi.forEach((el, ct) => {
+    if (ct < 4) cetakPetunjuk(el, ct, pathClr, true);
+    else cetakPetunjuk(el, ct - 4, tagSgn, false);
+});
 
 /*  data yang akan dicari */
-let KML;
-function setupKML() {
-    KML = {
-        placemark: undefined,
-        style: undefined,
-        styleMap: undefined,
-        styleName: [],
-        jalur: [],
-        closure: [],
-        ODP: [],
-        tiang: [],
-        coilan: [],
-        client: [],
-        POP: [],
-        sisa: [],
-        sisaIconSource: []
-    };
-}
-setupKML();
+const KML = {
+    placemark: undefined,
+    style: undefined,
+    styleMap: undefined,
+    styleName: [],
+    jalur: [],
+    closure: [],
+    ODP: [],
+    tiang: [],
+    coilan: [],
+    client: [],
+    POP: [],
+    handhole: []
+};
 
 function getKoordinat(xmlDOM, divisionFlag, query) { // 0'all' 1'front' 2'back'
     
@@ -74,10 +179,38 @@ function tampilData() {
         else output.push(`${defTemStr}${ct+1}`);
     }
 
-    function tulisKeterangan(defTemStr, el, ct) {
+    // buat bulan dan tahun dalam format JSON untuk mengotomatisasikan tanggal
+    function tulisKeterangan(el, ct, tot) {
         const elType = el.querySelector('description');
+
+        let waktuData, waktu = '';
+        try {
+            waktuData = JSON.parse(XML_OBJ.querySelector('Folder description').innerHTML);
+        }
+        catch (er) {
+            waktuData = undefined;
+        }
+
+        if (waktuData) { 
+            if (waktuData[0] > 0 && waktuData[0] < 13) {
+                
+                // tahun kabisat
+                const bulan = bulanStr[waktuData[0] - 1];
+                if (bulan[0] == 'Februari') {
+                    if (waktuData[1] % 4 == 0) bulan[1] = 29;
+                    else bulan[1] = 28;
+                }
+
+                // membuat tanggal berdasarkan jumlah maksimal
+                waktu += Math.ceil(bulan[1] / tot * (ct + 1));
+                
+                waktu += ' ' + bulanStr[waktuData[0] - 1][0];
+                waktu += ' ' + waktuData[1];
+            }
+        }
+        
         if (elType) output.push(elType.innerHTML);
-        else output.push(`${defTemStr}${ct+1}`);
+        else output.push(waktu);
     }
 
     function tulisJarak(lat, lon) {
@@ -111,7 +244,7 @@ function tampilData() {
     }
 
     function tulisTikor(kors, isSingle, type) {
-        let val = '', deg, min, mataAngin, multiBuffer;
+        let val = '', min, mataAngin, multiBuffer;
 
         const dirFill = () => {
             
@@ -217,7 +350,7 @@ function tampilData() {
             break;}
             case columnEnum.KETERANGAN: {
                 forEachCurPar((el, ct) => {
-                    tulisKeterangan('Kabel ', el, ct);
+                    tulisKeterangan(el, ct, KML.jalur.length);
                 });
             break;}
             case columnEnum.HARGA_PER_METER: {
@@ -297,7 +430,7 @@ function tampilData() {
             break;}
             case columnEnum.KETERANGAN: {
                 forEachCurPar((el, ct) => {
-                    tulisKeterangan('Tanggal ', el, ct);
+                    tulisKeterangan(el, ct, KML.closure.length);
                 });
             break;}
         }
@@ -350,7 +483,7 @@ function tampilData() {
             break;}
             case columnEnum.KETERANGAN: {
                 forEachCurPar((el, ct) => {
-                    tulisKeterangan('Tanggal ', el, ct);
+                    tulisKeterangan(el, ct, KML.ODP.length);
                 });
             break;}
         }
@@ -392,8 +525,14 @@ function tampilData() {
                 });
             break;}
             case columnEnum.TINGGI: {
-                forEachCurPar((el) => {
-                    output.push(`7`);
+                forEachCurPar(el => {
+                    try {
+                        const ukuran = parseInt(el.querySelector('description').innerHTML[0]);
+                        output.push(ukuran != NaN ? `${ukuran}` : '7');
+                    }
+                    catch (er) {
+                        output.push('7');
+                    }
                 });
             break;}
             case columnEnum.HARGA: {
@@ -403,7 +542,7 @@ function tampilData() {
             break;}
             case columnEnum.KETERANGAN: {
                 forEachCurPar((el, ct) => {
-                    tulisKeterangan('Tanggal ', el, ct);
+                    tulisKeterangan(el, ct, KML.tiang.length);
                 });
             break;}
         }
@@ -422,7 +561,6 @@ function tampilData() {
 
     const hasilSection = hasil.querySelector('section');
     hasilSection.innerHTML = outputText;
-    hasil.classList.add('hasil-berhasil');
     hasilSection.addEventListener('click', () => copyAll(hasilSection));
 
     if(outputText.length > 50000) {
@@ -510,88 +648,124 @@ function generateIconName(isPath, eStyle) {
         }
     }
 
-    return {source: iconSource, name: iconName};
+    return iconName;
 }
 
 function cariData() {
     
     for (e of KML.placemark) {
 
-        let icon;
+        let iconName, jenis, isRun = true;
         const eStyle = e.querySelector('styleUrl').innerHTML;
 
         if (e.querySelector('LineString')) {
-            
-            icon = generateIconName(true, eStyle);
-            switch (icon.name) {
-                case 'ff00ffff': {
-                    KML.jalur.push(e);
-                    KML.styleName.push([eStyle, '#msn_akses']);
-                    break;
-                }
-                case 'ff00ff00': {
-                    KML.jalur.push(e);
-                    KML.styleName.push([eStyle, '#msn_backbone']);
-                    break;
-                }
-                default: {
-                    KML.sisa.push(e);
-                    KML.sisaIconSource.push(icon.name);
-                    KML.styleName.push([eStyle, `sisa*${icon.name}`]);
+
+            KML.jalur.push(e);
+            iconName  = generateIconName(true, eStyle).split('').reverse().join('');
+
+            if (isRun)
+            for (i of pathClr.backbone) {
+                if (i == iconName) {
+                    jenis = 'backbone';
+                    isRun = false; break;
                 }
             }
+
+            if (isRun)
+            for (i of pathClr.tanam) {
+                if (i == iconName) {
+                    jenis = 'tanam';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun)
+            for (i of pathClr.berbeda) {
+                if (i == iconName) {
+                    jenis = 'berbeda';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun) jenis = 'akses';
+
+            KML.styleName.push([eStyle, `#msn_${jenis}`]);
         }
         else {
             
-            icon = generateIconName(false, eStyle);
-            switch (icon.name) {
-                case 'ylw-pushpin.png': {
-                    KML.closure.push(e);
-                    KML.styleName.push([eStyle, '#msn_closure']);
-                    break;
-                }
-                case 'placemark_square.png': {
-                    KML.ODP.push(e);
-                    KML.styleName.push([eStyle, '#msn_odp']);
-                    break;
-                }
-                case 'blue-pushpin.png': {
+            iconName = generateIconName(false, eStyle);
+
+            if (isRun)
+            for (i of tagSgn.tiang) {
+                if (i == iconName) {
                     KML.tiang.push(e);
-                    KML.styleName.push([eStyle, '#msn_tiang']);
-                    break;
-                }
-                case 'red-pushpin.png': {
-                    KML.coilan.push(e);
-                    KML.styleName.push([eStyle, '#msn_coilan']);
-                    break;
-                }
-                case 'wht-pushpin.png': {
-                    KML.client.push(e);
-                    KML.styleName.push([eStyle, '#msn_client']);
-                    break;
-                }
-                case 'ranger_station.png': {
-                    KML.POP.push(e);
-                    KML.styleName.push([eStyle, '#msn_pop']);
-                    break;
-                }
-                default: {
-                    KML.sisa.push(e);
-                    KML.sisaIconSource.push(icon.source);
-                    KML.styleName.push([eStyle, `sisa*${icon.name}`]);
+                    jenis = 'tiang';
+                    isRun = false; break;
                 }
             }
+
+            if (isRun)
+            for (i of tagSgn.odp) {
+                if (i == iconName) {
+                    KML.ODP.push(e);
+                    jenis = 'odp';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun)
+            for (i of tagSgn.coilan) {
+                if (i == iconName) {
+                    KML.coilan.push(e);
+                    jenis = 'coilan';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun)
+            for (i of tagSgn.client) {
+                if (i == iconName) {
+                    KML.client.push(e);
+                    jenis = 'client';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun)
+            for (i of tagSgn.pop) {
+                if (i == iconName) {
+                    KML.POP.push(e);
+                    jenis = 'pop';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun)
+            for (i of tagSgn.handhole) {
+                if (i == iconName) {
+                    KML.handhole.push(e);
+                    jenis = 'handhole';
+                    isRun = false; break;
+                }
+            }
+
+            if (isRun) {
+                KML.closure.push(e);
+                jenis = 'closure';
+            }
+
+            KML.styleName.push([eStyle, `#msn_${jenis}`]);
         }
     }
 }
 
 //////////////
 
-function muatUlang() {
+function proses() {
 
     const xmlParser = new DOMParser();
-    const xmlDoc = xmlParser.parseFromString(xmlText, 'text/xml'); 
-    const xmlObj = xmlDoc.querySelector('Document');
+    const xmlDoc = xmlParser.parseFromString(XML_TEXT, 'text/xml'); 
+    XML_OBJ = xmlDoc.querySelector('Document');
 
     if (KML.placemark != undefined) {
         setupKML();
@@ -608,32 +782,43 @@ function muatUlang() {
             });
         }
 
-        sisa.querySelector('.placemarks').innerHTML = '';
         unduh.classList.remove('unduh-siap');
     }
 
     setTimeout(() => {
-        KML.placemark = xmlObj.querySelectorAll('Placemark');
-        KML.style = xmlObj.querySelectorAll('Style');
-        KML.styleMap = xmlObj.querySelectorAll('StyleMap');
+        KML.placemark = XML_OBJ.querySelectorAll('Placemark');
+        KML.style = XML_OBJ.querySelectorAll('Style');
+        KML.styleMap = XML_OBJ.querySelectorAll('StyleMap');
 
         cariData();
         tampilData(); // generates JSON form
-        rekonstruksi();
+        REKONSTRUKSI();
     }, 10);
 }
 
 function olahData() {
 
+    // hilangkan petunjuk
+    petunjuk.style.display = 'none';
+
     const [file] = document.querySelector('input[type=file]').files;
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
-        xmlText = reader.result;
-        muatUlang();
+
+        XML_TEXT = reader.result;
+        hasil.classList.add('hasil-berhasil');
+        
+        proses();
+
+        const inputCard = document.querySelector('.input-card');
+        inputCard.classList.add('input-card-selesai');        
+        inputCard.querySelector('input').style.display = 'none';
     }, false);
 
     if (file) {
         reader.readAsText(file);
     }
 }
+
+
