@@ -529,13 +529,16 @@ function tampilData() {
             break;}
             case columnEnum.TINGGI: {
                 forEachCurPar(el => {
+                    let ukuran;
                     try {
-                        const ukuran = parseInt(el.querySelector('description').innerHTML[0]);
-                        output.push(ukuran != NaN ? `${ukuran}` : '7');
+                        ukuran = parseInt(el.querySelector('description').innerHTML[0]);
                     }
                     catch (er) {
-                        output.push('7');
+                        ukuran = 7;
                     }
+
+                    if (ukuran > 0) output.push(ukuran);
+                    else output.push(7);
                 });
             break;}
             case columnEnum.HARGA: {
