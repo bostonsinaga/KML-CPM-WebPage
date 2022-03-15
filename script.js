@@ -629,7 +629,7 @@ function generateIconName(isPath, eStyle) {
                             iconSource = j.querySelector('IconStyle Icon href').innerHTML;
                         }
                         catch (err) {
-                            iconSource = 'https://maps.google.com/mapfiles/kml/shapes/donut.png';
+                            iconSource = 'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
                         }
         
                         let h = iconSource.length, buffer = '';
