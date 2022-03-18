@@ -126,6 +126,7 @@ const KML = {
     styleMap: undefined,
     styleName: [],
     jalur: [],
+    jalurTanam: [],
     closure: [],
     ODP: [],
     tiang: [],
@@ -173,10 +174,18 @@ function tampilData() {
 
     let columnEnum, columnEnumLength, curParDOM, output = [];
 
-    function tulisNama(defTemStr, el, ct) {
+    function tulisNama(defTemStr, el, ct, tnmEl = undefined) {
         const elType = el.querySelector('name');
-        if (elType) output.push(elType.innerHTML);
-        else output.push(`${defTemStr}${ct+1}`);
+
+        let tanamTag = '';
+        if (tnmEl) {
+            tanamTag = '@-';
+        }
+        
+        if (elType) {
+            output.push(elType.innerHTML + tanamTag);
+        }
+        else output.push(`${defTemStr}${ct+1}${tanamTag}`);
     }
 
     // buat bulan dan tahun dalam format JSON untuk mengotomatisasikan tanggal
@@ -312,14 +321,20 @@ function tampilData() {
         while (ctr--) output.push('=>');
     }
 
-    function forEachCurPar(func) {
+    function forEachCurPar(func, isJalur = false) {
 
         if (curParDOM.length == 0) {
             sekat(1);
         }
         else {
             curParDOM.forEach((el, ct) => {
-                func(el, ct);
+                if (isJalur) {
+                    func(el, ct, KML.jalurTanam[ct]);
+                }
+                else {
+                    func(el, ct);
+                }
+
                 if (ct == curParDOM.length - 1) sekat(1);
             });
         }
@@ -348,7 +363,7 @@ function tampilData() {
         switch (i) {
             case columnEnum.NAMA: {
                 forEachCurPar((el, ct) => {
-                    tulisNama('Jalur ', el, ct);
+                    tulisNama('Jalur ', el, ct, KML.jalurTanam[ct]);
                 });
             break;}
             case columnEnum.KETERANGAN: {
@@ -434,6 +449,53 @@ function tampilData() {
             case columnEnum.KETERANGAN: {
                 forEachCurPar((el, ct) => {
                     tulisKeterangan(el, ct, KML.closure.length);
+                });
+            break;}
+        }
+    }
+
+    //////////////
+
+    sekat(2);
+
+    // HANDHOLE //
+
+    curParDOM = KML.handhole;
+    columnEnum = {
+        NAMA: 0,
+        LATITUDE: 1,
+        LONGITUDE: 2,
+        HARGA: 3,
+        KETERANGAN: 4
+    };
+    updateColumnEnumLength();
+
+    for (let i = 0; i < columnEnumLength; i++) {
+
+        switch (i) {
+            case columnEnum.NAMA: {
+                forEachCurPar((el, ct) => {
+                    tulisNama('Hand Hole ', el, ct);
+                });
+            break;}
+            case columnEnum.LATITUDE: {
+                forEachCurPar((el) => {
+                    tulisSingleTikor(el, 'lat');
+                });
+            break;}
+            case columnEnum.LONGITUDE: {
+                forEachCurPar((el) => {
+                    tulisSingleTikor(el, 'lon');
+                });            
+            break;}
+            case columnEnum.HARGA: {
+                forEachCurPar((el) => {
+                    
+                });
+            break;}
+            case columnEnum.KETERANGAN: {
+                forEachCurPar((el, ct) => {
+                    tulisKeterangan(el, ct, KML.handhole.length);
                 });
             break;}
         }
@@ -666,6 +728,7 @@ function cariData() {
 
         if (e.querySelector('LineString')) {
 
+            let isTanam = false;
             KML.jalur.push(e);
             iconName  = generateIconName(true, eStyle).split('').reverse().join('');
 
@@ -681,7 +744,13 @@ function cariData() {
             for (i of pathClr.tanam) {
                 if (i == iconName) {
                     jenis = 'tanam';
-                    isRun = false; break;
+                    isRun = false;
+                    
+                    // set for 'tanam'
+                    isTanam = true;
+                    KML.jalurTanam.push(e);
+                    
+                    break;
                 }
             }
 
@@ -696,6 +765,7 @@ function cariData() {
             if (isRun) jenis = 'akses';
 
             KML.styleName.push([eStyle, `#msn_${jenis}`]);
+            if (isTanam == false) KML.jalurTanam.push(undefined);
         }
         else {
             
