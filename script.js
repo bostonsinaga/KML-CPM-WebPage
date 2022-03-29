@@ -767,7 +767,7 @@ function cariData() {
             KML.styleName.push([eStyle, `#msn_${jenis}`]);
             if (isTanam == false) KML.jalurTanam.push(undefined);
         }
-        else {
+        else if (!e.querySelector('Polygon')) {
             
             iconName = generateIconName(false, eStyle);
 
