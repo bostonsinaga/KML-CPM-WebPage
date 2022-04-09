@@ -102,7 +102,36 @@ REKONSTRUKSI = () => {
     // use template xml
     let styleSetXML = `
     <name>${XML_OBJ.querySelector('name').innerHTML}</name>
-    <open>1</open>`;
+    <open>1</open>
+    <Style id="sh_cover-area">
+        <LineStyle>
+            <color>ff7f0055</color>
+            <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>807f0055</color>
+        </PolyStyle>
+    </Style>
+        <Style id="sn_cover-area">
+        <LineStyle>
+            <color>ff7f0055</color>
+            <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>807f0055</color>
+        </PolyStyle>
+    </Style>
+    <StyleMap id="msn_cover-area">
+        <Pair>
+            <key>normal</key>
+            <styleUrl>#sn_cover-area</styleUrl>
+        </Pair>
+        <Pair>
+            <key>highlight</key>
+            <styleUrl>#sh_cover-area</styleUrl>
+        </Pair>
+    </StyleMap>`;
+    
     {
         const iconSources = [
             'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png',
@@ -196,3 +225,4 @@ function downloadKML() {
 }
 
 unduh.addEventListener('click', () => downloadKML());
+

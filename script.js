@@ -32,8 +32,8 @@ const tagSgn = {
         'blu-diamond.png', 'blu-circle.png', 'blu-square.png', 'blu-stars.png'
     ],
     odp: [
-        'placemark_square.png', 'square.png', 'donut.png',
-        'open-diamond.png', 'cross-hairs.png', 'placemark_circle.png'
+        'placemark_square.png', 'square.png', 'donut.png', 'open-diamond.png',
+        'cross-hairs.png', 'placemark_circle.png', 'ltblu-stars.png'
     ],
     coilan: [
         'red-pushpin.png', 'red-blank.png', 'red-diamond.png', 'red-circle.png',
@@ -59,8 +59,8 @@ const tagSgn_folderName = {
         'paddle/', 'paddle/', 'paddle', 'paddle/'
     ],
     odp: [
-        'shapes/', 'shapes/', 'shapes/',
-        'shapes/', 'shapes/', 'shapes/'
+        'shapes/', 'shapes/', 'shapes/', 'shapes/',
+        'shapes/', 'shapes/', 'paddle/'
     ],
     coilan: [
         'pushpin/', 'paddle/', 'paddle/', 'paddle/',
@@ -79,6 +79,55 @@ const tagSgn_folderName = {
     ],
     closure: ['pushpin/']
 };
+
+// copy all by clicking
+const copyAll = (obj) => {
+    var range = document.createRange();
+    range.selectNode(obj);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+}
+
+function createDataSection(outputText) {
+    const hasilSection = hasil.querySelector('section');
+    hasilSection.innerHTML = outputText;
+    hasilSection.addEventListener('click', () => copyAll(hasilSection));
+
+    if(outputText.length > 50000) {
+        const partsCount = Math.ceil(outputText.length / 50000);
+        let partsTag = 0, partsTag_buff, outputTextParts = [];
+
+        for (let i = 1; i <= partsCount; i++) {
+            partsTag_buff = partsTag;
+
+            if (i == partsCount) {
+                outputTextParts.push(outputText.slice(partsTag_buff));
+            }
+            else {
+                partsTag += parseInt(outputText.length / partsCount);
+                outputTextParts.push(outputText.slice(partsTag_buff, partsTag));
+            }
+        }
+
+        hasilSection.innerHTML = outputTextParts[0];
+        hasilSection.classList.add('section-multi');
+
+        const hasilSections = Array.from(
+            {length: partsCount - 1}, () => document.createElement('section')
+        );
+
+        hasilSections.forEach((el,ct) => {
+
+            if (ct != partsCount - 2) {
+                el.classList.add('section-multi');
+            }
+
+            el.innerHTML = outputTextParts[ct+1];
+            hasil.appendChild(el);
+            el.addEventListener('click', () => copyAll(el));
+        });
+    }
+}
 
 function cetakPetunjuk(el, ct, obj, isPath) {
     const objName = Object.keys(obj)[ct];
@@ -133,7 +182,8 @@ const KML = {
     coilan: [],
     client: [],
     POP: [],
-    handhole: []
+    handhole: [],
+    coverArea: []
 };
 
 function getKoordinat(xmlDOM, divisionFlag, query) { // 0'all' 1'front' 2'back'
@@ -308,7 +358,7 @@ function tampilData() {
 
         output.push(val);
     }
-
+    
     function tulisMultiTikor(el, flag) {
         tulisTikor(getKoordinat(el, flag, 'LineString coordinates'), false);
     }
@@ -378,6 +428,7 @@ function tampilData() {
             break;}
             case columnEnum.JARAK: {
                 forEachCurPar((el) => {
+                    
                     const kors = getKoordinat(el, 0, 'LineString coordinates');
                     let totalJarak = 0;
                     for (let i = 0; i < kors.lat.length - 1; i++) {
@@ -618,53 +669,7 @@ function tampilData() {
     
     //////////////
 
-    const copyAll = (obj) => {
-        var range = document.createRange();
-        range.selectNode(obj);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-    }
-
-    const outputText = JSON.stringify(output);
-
-    const hasilSection = hasil.querySelector('section');
-    hasilSection.innerHTML = outputText;
-    hasilSection.addEventListener('click', () => copyAll(hasilSection));
-
-    if(outputText.length > 50000) {
-        const partsCount = Math.ceil(outputText.length / 50000);
-        let partsTag = 0, partsTag_buff, outputTextParts = [];
-
-        for (let i = 1; i <= partsCount; i++) {
-            partsTag_buff = partsTag;
-
-            if (i == partsCount) {
-                outputTextParts.push(outputText.slice(partsTag_buff));
-            }
-            else {
-                partsTag += parseInt(outputText.length / partsCount);
-                outputTextParts.push(outputText.slice(partsTag_buff, partsTag));
-            }
-        }
-
-        hasilSection.innerHTML = outputTextParts[0];
-        hasilSection.classList.add('section-multi');
-
-        const hasilSections = Array.from(
-            {length: partsCount - 1}, () => document.createElement('section')
-        );
-
-        hasilSections.forEach((el,ct) => {
-
-            if (ct != partsCount - 2) {
-                el.classList.add('section-multi');
-            }
-
-            el.innerHTML = outputTextParts[ct+1];
-            hasil.appendChild(el);
-            el.addEventListener('click', () => copyAll(el));
-        });
-    }
+    createDataSection(JSON.stringify(output));
 }
 
 // CARI DATA //
@@ -832,6 +837,10 @@ function cariData() {
 
             KML.styleName.push([eStyle, `#msn_${jenis}`]);
         }
+        else {
+            KML.coverArea.push(e);
+            KML.styleName.push([eStyle, `#msn_cover-area`]);
+        }
     }
 }
 
@@ -873,8 +882,8 @@ function proses() {
 }
 
 function olahData() {
-
-    // hilangkan petunjuk
+        
+    // hilangkan setting awal
     petunjuk.style.display = 'none';
 
     const [file] = document.querySelector('input[type=file]').files;
