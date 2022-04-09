@@ -190,15 +190,19 @@ function getKoordinat(xmlDOM, divisionFlag, query) { // 0'all' 1'front' 2'back'
     
     const str = xmlDOM.querySelector(query).innerHTML;
     let kors = {lat: [], lon: []};
-    let val = '', buff = [];
+    let val = '', buff = [], commaSetCount = 0;
     
     for (e of str) {
         if (e == ',') {
             buff.push(parseFloat(val));
             val = '';
+            commaSetCount++;
         }
-        else if (e != ' ') {
+        else if (e != ' ' && commaSetCount < 2) {
             val += e;
+        }
+        else if (e == ' ' && commaSetCount >= 2) {
+            commaSetCount = 0;
         }
     }
 
