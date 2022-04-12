@@ -8,7 +8,8 @@ const unduh = document.querySelector('.unduh');
 const petunjuk = document.querySelector('.petunjuk');
 const petunjukKlasifikasi = petunjuk.querySelectorAll('section div');
 
-let XML_OBJ, XML_TEXT, REKONSTRUKSI = undefined, IS_WAKTU_DATA = false;
+let XML_OBJ, XML_DOC, XML_TEXT,
+    REKONSTRUKSI = undefined, IS_WAKTU_DATA = false;
 
 const pathClr = {
     backbone: [
@@ -55,29 +56,29 @@ const tagSgn = {
 
 const tagSgn_folderName = {
     tiang: [
-        'pushpin/', 'shapes/', 'pushpin/', 'paddle/',
-        'paddle/', 'paddle/', 'paddle', 'paddle/'
+        'pushpin', 'shapes', 'pushpin', 'paddle',
+        'paddle', 'paddle', 'paddle', 'paddle'
     ],
     odp: [
-        'shapes/', 'shapes/', 'shapes/', 'shapes/',
-        'shapes/', 'shapes/', 'paddle/'
+        'shapes', 'shapes', 'shapes', 'shapes',
+        'shapes', 'shapes', 'paddle'
     ],
     coilan: [
-        'pushpin/', 'paddle/', 'paddle/', 'paddle/',
-        'paddle', 'paddle/', 'pushpin/'
+        'pushpin', 'paddle', 'paddle', 'paddle',
+        'paddle', 'paddle', 'pushpin'
     ],
     client: [
-        'pushpin/', 'paddle/', 'paddle/',
-        'paddle/', 'paddle', 'paddle/'
+        'pushpin', 'paddle', 'paddle',
+        'paddle', 'paddle', 'paddle'
     ],
     pop: [
-        'shapes/', 'shapes/', 'paddle/', 'paddle/',
-        'paddle/', 'paddle', 'paddle/'
+        'shapes', 'shapes', 'paddle', 'paddle',
+        'paddle', 'paddle', 'paddle'
     ],
     handhole: [
-        'paddle/', 'pushpin/', 'pushpin/'
+        'paddle', 'pushpin', 'pushpin'
     ],
-    closure: ['pushpin/']
+    closure: ['pushpin']
 };
 
 // copy all by clicking
@@ -208,6 +209,9 @@ function getKoordinat(xmlDOM, divisionFlag, query) { // 0'all' 1'front' 2'back'
 
     let buffbuff = 0;
 
+    // only available in south east asia
+    // WARNING !!! this is so specific solve of
+    // identification 'latitude and longitude'
     buff.forEach((e, i) => {
         if (i < buff.length) {
             if (e < buffbuff) kors.lat.push(e);
@@ -215,7 +219,7 @@ function getKoordinat(xmlDOM, divisionFlag, query) { // 0'all' 1'front' 2'back'
             buffbuff = e;
         }
     });
-
+    
     return divisionFlag == 0 ? kors : (divisionFlag == 1 ?
         {lat: kors.lat[0], lon: kors.lon[0]} : // front
         {lat: kors.lat[kors.lat.length - 1], lon: kors.lon[kors.lon.length - 1]} // back
@@ -730,10 +734,28 @@ function generateIconName(isPath, eStyle) {
 
 function cariData() {
     
+    let ctrArr = [];
+    let ctr = 0;
+    let isError = false;
+    
     for (e of KML.placemark) {
 
-        let iconName, jenis, isRun = true;
-        const eStyle = e.querySelector('styleUrl').innerHTML;
+        let iconName, jenis, isRun = true; 
+        let eStyle;
+        ctr++;
+        ctrArr.push(ctr);
+
+        try {
+            eStyle = e.querySelector('styleUrl').innerHTML;
+        }
+        catch(err) {
+            if (!isError) isError = true;
+            console.log(ctr);
+            const newElement = XML_DOC.createElement('styleUrl');
+            newElement.innerHTML = '#msn_xxxxx';
+            e.appendChild(newElement);
+            eStyle = '#msn_xxxxx';
+        }
 
         if (e.querySelector('LineString')) {
 
@@ -846,6 +868,8 @@ function cariData() {
             KML.styleName.push([eStyle, `#msn_cover-area`]);
         }
     }
+
+    if (isError) console.log('Total: ' + ctrArr.length);
 }
 
 //////////////
@@ -853,8 +877,8 @@ function cariData() {
 function proses() {
 
     const xmlParser = new DOMParser();
-    const xmlDoc = xmlParser.parseFromString(XML_TEXT, 'text/xml'); 
-    XML_OBJ = xmlDoc.querySelector('Document');
+    XML_DOC = xmlParser.parseFromString(XML_TEXT, 'text/xml'); 
+    XML_OBJ = XML_DOC.querySelector('Document');
 
     if (KML.placemark != undefined) {
         setupKML();
