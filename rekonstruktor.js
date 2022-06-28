@@ -48,7 +48,7 @@ function getTemplatePathXML_style(id, icoNm) {
         </BalloonStyle>
         <LineStyle>
             <color>${icoNm}</color>
-            <width>3</width>
+            <width>2</width>
         </LineStyle>
     </Style>`;
 }
