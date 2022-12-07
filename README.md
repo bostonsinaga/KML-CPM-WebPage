@@ -1,4 +1,4 @@
- # bostonsinaga.github.io
+ # KML-CPM-BeforeGoogleSheets
 **KML Copy Paste Machine**</br>
 
 A simple *'.kml'* to SpreadSheets converter.
