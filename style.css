@@ -1,171 +1,172 @@
 * {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
 }
 
 .input-card {
-    width: 300px;
-    height: 250px;
-    margin: 200px auto;
-    padding: 20px;
-    background-color: rgb(223, 62, 62);
-    border-radius: 10px;
-    text-align: center;
+  width: 300px;
+  height: 250px;
+  margin: 200px auto;
+  padding: 20px;
+  background-color: rgb(223, 62, 62);
+  border-radius: 10px;
+  text-align: center;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .input-card h1 {
-    color: rgb(255, 184, 143);
-    font-size: 30px;
+  color: rgb(255, 184, 143);
+  font-size: 30px;
 }
 
 .input-card input {
-    width: 90%;
-    background-color: white;
-    border-radius: 10px;
-    overflow-x: auto;
+  width: 90%;
+  background-color: white;
+  border-radius: 10px;
+  overflow-x: auto;
 }
 
 .input-card-selesai {
-    width: auto;
-    height: 60px;
-    padding: 0;
-    margin: 0;
-    margin-bottom: 150px;
-    border: none;
-    border-radius: 0;
+  width: auto;
+  height: 60px;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 150px;
+  border: none;
+  border-radius: 0;
 }
 
 .hasil, .unduh {
-    display: none;
+  display: none;
 }
 
 .hasil-berhasil {
-    margin: auto;
-    width: 900px;
-    border: 5px solid rgb(223, 62, 62);
-    border-radius: 10px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    height: auto;
+  margin: auto;
+  width: 900px;
+  border: 5px solid rgb(223, 62, 62);
+  border-radius: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: auto;
 }
 .hasil header {
-    border-bottom: 5px solid rgb(223, 62, 62);
-    color: rgb(223, 62, 62);
-    background-color: rgba(255, 184, 143, 0.5);
-    font-size: 25px;
-    font-weight: bold;
-    font-style: italic;
-    text-align: center;
-    line-height: 35px;
+  border-bottom: 5px solid rgb(223, 62, 62);
+  color: rgb(223, 62, 62);
+  background-color: rgba(255, 184, 143, 0.5);
+  font-size: 25px;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+  line-height: 35px;
 }
 
 .hasil .section-multi {
-    border-bottom: 5px solid rgb(223, 62, 62);
+  border-bottom: 5px solid rgb(223, 62, 62);
 }
 
 .hasil section {
-    padding: 10px;
-    overflow: auto;
-    cursor: copy;
-    height: 300px;
+  padding: 10px;
+  overflow: auto;
+  cursor: copy;
+  height: 300px;
 }
 
 .unduh-siap {
-    display: block;
-    margin: 100px auto;
-    padding: 10px;
-    background-color: rgb(0, 191, 0);
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-sizing: border-box;
+  display: block;
+  margin: 100px auto;
+  padding: 10px;
+  background-color: rgb(0, 191, 0);
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .petunjuk {
-    width: 700px;
-    margin: auto;
-    background-color: gainsboro;
-    border-radius: 10px;
-    padding: 20px;
+  width: 700px;
+  margin: auto;
+  background-color: gainsboro;
+  border-radius: 10px;
+  padding: 20px;
 }
 
 .petunjuk header {
-    width: 300px;
-    margin: auto;
-    color: rgb(26, 26, 26);
-    background-color: grey;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
+  width: 300px;
+  margin: auto;
+  color: rgb(26, 26, 26);
+  background-color: grey;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .petunjuk .simbol-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .petunjuk .simbol-container p,
 .petunjuk .lain {
-    font-size: 15px;
-    margin-bottom: 15px;
-    color: rgb(53, 53, 53);
+  font-size: 15px;
+  margin-bottom: 15px;
+  color: rgb(53, 53, 53);
 }
 
 .petunjuk .simbol-container div {
-    margin-bottom: 10px;
-    display: flex;
-    gap: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 20px;
 }
 
 .petunjuk .simbol-container div h1 {
-    font-size: 15px;
-    font-style: italic;
+  font-size: 15px;
+  font-style: italic;
 }
 
 .petunjuk .simbol-container div section {
-    display: flex;
-    gap: 10px;
-    padding: 0;
-    height: 1rem;
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  height: 1rem;
 }
 
 .petunjuk .simbol-container div section div {
-    width: 1rem;
-    height: 1rem;
-    background-size: 1rem 1rem;
-    border: 1px solid black;
+  width: 1rem;
+  height: 1rem;
+  background-size: 1rem 1rem;
+  border: 1px solid black;
 }
 
 .unduh-siap:hover {
-    background-color: rgb(0, 159, 0);
+  background-color: rgb(0, 159, 0);
 }
 
 .unduh-siap:active {
-    background-color: rgb(0, 127, 0);
+  background-color: rgb(0, 127, 0);
 }
 
 footer {
-    margin-top: 100px;
-    height: 30px;
-    color: white;
-    background-color: black;
-    text-align: center;
-    line-height: 30px;
+  margin-top: 100px;
+  height: 30px;
+  color: white;
+  background-color: black;
+  text-align: center;
+  line-height: 30px;
 }
 
 footer a {
-    color: wheat;
-    font-style: italic;
-    text-decoration: none;
+  color: wheat;
+  font-style: italic;
+  text-decoration: none;
 }
+

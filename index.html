@@ -1,81 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KML Copy Paste Machine | BOSTON SINAGA</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>KML Copy Paste Machine | BOSTON SINAGA</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-
-    <div class="input-card">
-        <h1>KML Copy Paste Machine</h1>
-        <input type="file" accept=".kml" name='KMZ' onchange="olahData()">
-    </div>
-
-    <div class="hasil">
-        <header>Silahkan "copy" data berikut dan "paste" ke Google Sheets</header>
+  <div class="input-card">
+    <h1>KML Copy Paste Machine</h1>
+    <input type="file" accept=".kml" name='KMZ' onchange="olahData()">
+  </div>
+  <div class="hasil">
+    <header>Silahkan "copy" data berikut dan "paste" ke Google Sheets</header>
+    <section></section>
+  </div>
+  <div class="petunjuk">
+    <header>PETUNJUK:</header>
+    <section class="simbol-container">
+      <p>-Warna dan simbol yang akan otomatis diidentifikasi sebagai berikut:</p>
+      <div class="jalur-backbone">
+        <h1>Jalur Backbone:</h1>
         <section></section>
-    </div>
-
-    <div class="petunjuk">
-        <header>PETUNJUK:</header>
-        <section class="simbol-container">
-            <p>-Warna dan simbol yang akan otomatis diidentifikasi sebagai berikut:</p>
-            <div class="jalur-backbone">
-                <h1>Jalur Backbone:</h1>
-                <section></section>
-            </div>
-            <div class="jalur-tanam">
-                <h1>Jalur Tanam:</h1>
-                <section></section>
-            </div>
-            <div class="jalur-berbeda">
-                <h1>Jalur 2 Kabel Berbeda:</h1>
-                <section></section>
-            </div>
-            <div class="jalur-akses">
-                <h1>Jalur Akses:</h1>
-                <section></section>
-            </div>
-            <div class="tiang">
-                <h1>Tiang:</h1>
-                <section></section>
-            </div>
-            <div class="odp">
-                <h1>ODP:</h1>
-                <section></section>
-            </div>
-            <div class="coilan">
-                <h1>Coilan:</h1>
-                <section></section>
-            </div>
-            <div class="client">
-                <h1>Client:</h1>
-                <section></section>
-            </div>
-            <div class="pop">
-                <h1>POP:</h1>
-                <section></section>
-            </div>
-            <div class="handhole">
-                <h1>Handhole:</h1>
-                <section></section>
-            </div>
-            <div class="closure">
-                <h1>Closure:</h1>
-                <section></section>
-            </div>
-        </section><br>
-        <p class="lain">-Panjang tiang akan secara default 7m. Untuk ukuran khusus, silahkan tulis nilainya di deskripsi (eg. 9m).</p>
-    </div>
-
-    <button class="unduh">UNDUH KML</button>
-
-    <footer>
-        See my GitHub <a href="https://github.com/bostonsinaga">@bostonsinaga</a>
-    </footer>
-    
-    <script src="script.js"></script>
-    <script src="rekonstruktor.js"></script>
+      </div>
+      <div class="jalur-tanam">
+        <h1>Jalur Tanam:</h1>
+        <section></section>
+      </div>
+      <div class="jalur-berbeda">
+        <h1>Jalur 2 Kabel Berbeda:</h1>
+        <section></section>
+      </div>
+      <div class="jalur-akses">
+        <h1>Jalur Akses:</h1>
+        <section></section>
+      </div>
+      <div class="tiang">
+        <h1>Tiang:</h1>
+        <section></section>
+      </div>
+      <div class="odp">
+        <h1>ODP:</h1>
+        <section></section>
+      </div>
+      <div class="coilan">
+        <h1>Coilan:</h1>
+        <section></section>
+      </div>
+      <div class="client">
+        <h1>Client:</h1>
+        <section></section>
+      </div>
+      <div class="pop">
+        <h1>POP:</h1>
+        <section></section>
+      </div>
+      <div class="handhole">
+        <h1>Handhole:</h1>
+        <section></section>
+      </div>
+      <div class="closure">
+        <h1>Closure:</h1>
+        <section></section>
+      </div>
+    </section><br>
+    <p class="lain">-Panjang tiang akan secara default 7m. Untuk ukuran khusus, silahkan tulis nilainya di deskripsi (eg. 9m).</p>
+  </div>
+  <button class="unduh">UNDUH KML</button>
+  <footer>
+    See my GitHub <a href="https://github.com/bostonsinaga">@bostonsinaga</a>
+  </footer>
+  <script src="script.js"></script>
+  <script src="rekonstruktor.js"></script>
 </body>
 </html>
